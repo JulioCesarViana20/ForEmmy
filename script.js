@@ -65,18 +65,24 @@ function startCountdown() {
   const target = new Date(siteData.birthday);
   const countdown = $("#countdown");
   const message = $("#birthday-message");
+  const revealButton = $("#reveal-button");
+  let timer;
   const tick = () => {
     const difference = target.getTime() - Date.now();
     if (difference <= 0) {
       countdown.hidden = true;
       message.hidden = false;
+      revealButton.disabled = false;
+      revealButton.setAttribute("aria-disabled", "false");
+      revealButton.firstChild.textContent = "Abrir mensagem ";
+      clearInterval(timer);
       return;
     }
     const values = { days: Math.floor(difference / 86400000), hours: Math.floor(difference / 3600000) % 24, minutes: Math.floor(difference / 60000) % 60, seconds: Math.floor(difference / 1000) % 60 };
     Object.entries(values).forEach(([key, value]) => { $(`[data-time="${key}"]`).textContent = String(value).padStart(2, "0"); });
   };
+  timer = setInterval(tick, 1000);
   tick();
-  setInterval(tick, 1000);
 }
 
 function openLightbox(item) {
